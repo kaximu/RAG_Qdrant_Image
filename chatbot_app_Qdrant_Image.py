@@ -68,6 +68,14 @@ Per-question detail view (chunks with source + score + preview) + export JSON/TX
 # index management (select / delete current / delete all), feedback logging,
 # admin dashboard, and reset chat.
 
+"""
+💬 RAG Chatbot with Qdrant / FAISS + Hybrid retrieval
+- Ingest websites (text + image OCR) or uploaded files (TXT, PDF, Images)
+- OCR with EasyOCR only (no pytesseract needed, safe for Streamlit.io)
+- Multi-query expansion, reranking, similarity thresholding
+- Feedback logging + Admin dashboard
+"""
+
 import os
 import re
 import io
@@ -83,7 +91,7 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 from datetime import datetime
 from urllib.parse import urlparse, urljoin
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 
 # LangChain / embeddings / retrievers
 from langchain.docstore.document import Document
@@ -92,16 +100,16 @@ from langchain_community.vectorstores import Qdrant as LCQdrant
 from sentence_transformers import CrossEncoder
 from transformers import pipeline
 
-# BM25 + Ensemble retriever imports (compat across LC versions)
+# BM25 + Ensemble retriever imports
 try:
     from langchain_community.retrievers import BM25Retriever
 except Exception:
-    from langchain.retrievers import BM25Retriever  # old path
+    from langchain.retrievers import BM25Retriever
 
 try:
     from langchain.retrievers import EnsembleRetriever
 except Exception:
-    EnsembleRetriever = None  # will guard below
+    EnsembleRetriever = None
 
 # Embeddings
 try:
@@ -120,39 +128,58 @@ try:
 except Exception:
     FAISS_AVAILABLE = False
 
-from PIL import Image
-import pytesseract
-
-def extract_text_from_image(image_file):
-    image = Image.open(image_file)
-    text = pytesseract.image_to_string(image, lang="eng+ned")  # English + Dutch
-    return text
-
-from pdf2image import convert_from_bytes
-
-def extract_text_from_pdf(uploaded_file):
-    reader = PdfReader(uploaded_file)
-    text = " ".join((page.extract_text() or "") for page in reader.pages)
-
-    # OCR fallback for image-only pages
-    uploaded_file.seek(0)
-    images = convert_from_bytes(uploaded_file.read())
-    for img in images:
-        text += pytesseract.image_to_string(img, lang="eng+ned")
-    return text
-
+# OCR (EasyOCR only)
 import easyocr
 from PIL import Image
+from io import BytesIO
 from pdf2image import convert_from_bytes
+from PyPDF2 import PdfReader
 
-# Load once
 ocr_reader = easyocr.Reader(['en', 'nl'], gpu=False)
 
-def extract_text_from_image_bytes(image_bytes):
-    img = Image.open(BytesIO(image_bytes))
+# =========================
+# OCR Helpers
+# =========================
+def extract_text_from_image_bytes(image_bytes: bytes) -> str:
     results = ocr_reader.readtext(image_bytes, detail=0)
     return "\n".join(results)
 
+def extract_file_text(uploaded_file):
+    """Extract text from TXT, PDF, or images using EasyOCR (safe for Streamlit.io)."""
+    file_bytes = uploaded_file.read()
+    file_type = uploaded_file.type
+
+    if file_type == "text/plain":
+        text = file_bytes.decode("utf-8")
+
+    elif file_type == "application/pdf":
+        # Try text extraction first
+        try:
+            reader = PdfReader(BytesIO(file_bytes))
+            text = " ".join((page.extract_text() or "") for page in reader.pages)
+        except Exception:
+            text = ""
+
+        # OCR fallback if PDF is scanned/image-based
+        if not text.strip():
+            text = ""
+            images = convert_from_bytes(file_bytes)
+            for page_num, img in enumerate(images, start=1):
+                buf = BytesIO()
+                img.save(buf, format="PNG")
+                page_text = extract_text_from_image_bytes(buf.getvalue())
+                if page_text.strip():
+                    text += f"\n[PDF page {page_num}] {page_text}\n"
+
+    elif file_type in ["image/png", "image/jpeg"]:
+        text = extract_text_from_image_bytes(file_bytes)
+
+    else:
+        return uploaded_file.name, None
+
+    # Clean whitespace
+    text = re.sub(r"\s{2,}", " ", text.replace("\n", " ")).strip()
+    return uploaded_file.name, text
 
 # =========================
 # Page / Constants
@@ -207,14 +234,8 @@ def load_jsonl(path: Path) -> List[dict]:
 # =========================
 # Ingestion Utils
 # =========================
-from typing import List, Tuple
-import requests
-import trafilatura
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse, urljoin
-from collections import deque
-
 def crawl_website(start_url: str, max_pages: int = 5) -> List[Tuple[str, str]]:
+    from collections import deque
     visited, q = set(), deque([start_url])
     results = []
 
@@ -234,7 +255,7 @@ def crawl_website(start_url: str, max_pages: int = 5) -> List[Tuple[str, str]]:
                 soup = BeautifulSoup(r.text, "html.parser")
                 text = soup.get_text(separator="\n")
 
-            # --- NEW: OCR for images ---
+            # OCR for images in webpage
             soup = BeautifulSoup(r.text, "html.parser")
             for img in soup.find_all("img", src=True):
                 img_url = urljoin(url, img["src"])
@@ -246,11 +267,9 @@ def crawl_website(start_url: str, max_pages: int = 5) -> List[Tuple[str, str]]:
                 except Exception:
                     continue
 
-            # Save page only if has enough content
             if text and len(text.split()) > 30:
                 results.append((url, clean_text(text)))
 
-            # enqueue internal links
             for a in soup.find_all("a", href=True):
                 link = urljoin(url, a["href"])
                 if urlparse(link).netloc == urlparse(start_url).netloc:
@@ -263,9 +282,13 @@ def crawl_website(start_url: str, max_pages: int = 5) -> List[Tuple[str, str]]:
 
     return results
 
-
 def clean_text(text: str) -> str:
     return re.sub(r"\s{2,}", " ", text.replace("\n", " ")).strip()
+
+# =========================
+# (Your retrieval, chunking, FAISS/Qdrant indexing, chatbot, and admin dashboard code goes here)
+# No changes needed to those parts — they already work.
+# =========================
 
 import re
 from io import BytesIO
