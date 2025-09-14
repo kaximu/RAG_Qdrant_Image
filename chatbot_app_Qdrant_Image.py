@@ -86,7 +86,6 @@ import requests
 import trafilatura
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 from pathlib import Path
 from datetime import datetime
@@ -838,10 +837,13 @@ else:
         # Top problematic questions
         st.subheader("🚩 Top Problematic Questions (most 'negative')")
         if "feedback" in df.columns and "question" in df.columns:
-            prob = (df[df["feedback"]=="negative"]
-                    .groupby("question")["feedback"]
-                    .count().sort_values(ascending=False)
-                    .head(10))
+            prob = (
+                df[df["feedback"] == "negative"]
+                .groupby("question")["feedback"]
+                .count()
+                .sort_values(ascending=False)
+                .head(10)
+            )
             st.table(prob)
 
         # Backend comparison (accuracy)
@@ -864,23 +866,34 @@ else:
             chunks = df.groupby("backend")["retrieved_chunks"].mean().round(2).reset_index()
             st.dataframe(chunks, use_container_width=True)
 
-        # Feedback vs Similarity scatter
+        # Feedback vs Similarity scatter (Altair)
         st.subheader("📈 Feedback vs Similarity Score")
         plot_points = []
         for row in data:
-            fb = row.get("feedback","")
+            fb = row.get("feedback", "")
             for d in row.get("docs", []):
                 sc = d.get("score", None)
                 if sc is not None:
                     plot_points.append({"feedback": fb, "score": sc})
         if plot_points:
+            import altair as alt
             dfp = pd.DataFrame(plot_points)
-            fig, ax = plt.subplots()
-            colors = dfp["feedback"].map({"positive":"green","negative":"red"}).fillna("gray")
-            ax.scatter(dfp["score"], range(len(dfp)), c=colors, alpha=0.6)
-            ax.set_xlabel("Similarity Score (Cross-Encoder)")
-            ax.set_ylabel("Instance")
-            st.pyplot(fig)
+            dfp["instance"] = range(len(dfp))
+
+            chart = (
+                alt.Chart(dfp)
+                .mark_circle(size=60, opacity=0.6)
+                .encode(
+                    x="score:Q",
+                    y="instance:Q",
+                    color=alt.Color(
+                        "feedback:N",
+                        scale=alt.Scale(domain=["positive", "negative"], range=["green", "red"])
+                    )
+                )
+                .properties(width=600, height=400)
+            )
+            st.altair_chart(chart, use_container_width=True)
 
         # Per-question detail view
         st.subheader("🔎 Per-Question Detail")
@@ -891,7 +904,11 @@ else:
             retrieved_docs = row.get("docs", [])
             if retrieved_docs:
                 for i, d in enumerate(retrieved_docs, 1):
-                    st.markdown(f"**Chunk {i}** — Source: `{d.get('source','unknown')}` — 🔢 Score: {round(float(d.get('score',0)),3)}\n\n{d.get('content','')[:500]}…")
+                    st.markdown(
+                        f"**Chunk {i}** — Source: `{d.get('source','unknown')}` — "
+                        f"🔢 Score: {round(float(d.get('score',0)),3)}\n\n"
+                        f"{d.get('content','')[:500]}…"
+                    )
                 st.download_button(
                     "⬇️ Download JSON",
                     data=json.dumps(retrieved_docs, indent=2, ensure_ascii=False),

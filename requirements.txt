@@ -6,8 +6,6 @@ trafilatura
 PyPDF2
 pillow
 easyocr
-matplotlib
-easyocr
 pdf2image
 pillow
 
