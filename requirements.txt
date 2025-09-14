@@ -7,6 +7,7 @@ PyPDF2
 pdf2image
 pillow
 easyocr
+matplotlib   # 👈 add this
 
 # LangChain + ecosystem
 langchain
@@ -20,8 +21,6 @@ rank-bm25
 sentence-transformers
 transformers
 huggingface-hub
-
- 
 
 # Utils
 pandas
