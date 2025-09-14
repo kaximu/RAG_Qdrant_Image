@@ -11,7 +11,7 @@ langchain-community
 langchain-huggingface
 langchain-openai
 faiss-cpu
-qdrant-client==1.9.0  
+qdrant-client 
 sentence-transformers
 transformers
 huggingface-hub
@@ -19,3 +19,4 @@ pandas
 numpy
 pyparsing
 altair         
+
