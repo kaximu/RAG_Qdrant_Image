@@ -138,7 +138,12 @@ qdrant_url = st.secrets["QDRANT_URL"]
 qdrant_api_key = st.secrets["QDRANT_API_KEY"]
 
 
-ocr_reader = easyocr.Reader(['en', 'nl'], gpu=False)
+@st.cache_resource
+def load_ocr():
+    # ⚡ English only → smaller model, faster download & less memory
+    return easyocr.Reader(['en'], gpu=False)
+
+ocr_reader = load_ocr()
 
 # =========================
 # OCR Helpers
