@@ -8,6 +8,7 @@ pillow
 easyocr
 pdf2image
 pillow
+qdrant-client
 
 # LangChain + ecosystem
 langchain
