@@ -134,6 +134,10 @@ from io import BytesIO
 from pdf2image import convert_from_bytes
 from PyPDF2 import PdfReader
 
+qdrant_url = st.secrets["QDRANT_URL"]
+qdrant_api_key = st.secrets["QDRANT_API_KEY"]
+
+
 ocr_reader = easyocr.Reader(['en', 'nl'], gpu=False)
 
 # =========================
