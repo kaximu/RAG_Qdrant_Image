@@ -7,14 +7,18 @@ PyPDF2
 pdf2image
 pillow
 easyocr
-matplotlib 
+pytesseract
+matplotlib
 
 # LangChain + ecosystem
 langchain
 langchain-community
 langchain-huggingface
 langchain-openai
+
+# Vector DBs
 faiss-cpu
+qdrant-client
 rank-bm25
 
 # Embeddings + models
