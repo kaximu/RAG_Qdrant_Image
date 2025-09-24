@@ -124,7 +124,7 @@ def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-local_css("rag-styles.css.css")
+local_css("styles.css")
 
 # =========================
 # Page / Constants
@@ -789,4 +789,5 @@ else:
                     file_name=f"{selq.replace(' ','_')}_retrieved.json",
                     mime="application/json"
                 )
+
 
