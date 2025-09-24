@@ -19,4 +19,5 @@ pandas
 numpy
 pyparsing
 altair         
+matplotlib
 
