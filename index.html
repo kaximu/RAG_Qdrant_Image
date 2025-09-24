@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG System - Smarter Answers with AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s ease-in-out infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #374151 100%);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 50%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg mr-3"></div>
+                        <span class="text-xl font-bold gradient-text">RAG System</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <a href="#features" class="text-gray-700 hover:text-blue-600 transition-colors">Features</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 transition-colors">How It Works</a>
+                    <a href="#use-cases" class="text-gray-700 hover:text-blue-600 transition-colors">Use Cases</a>
+                    <a href="#contact" class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg pt-24 pb-20 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                        Smarter Answers with 
+                        <span class="text-yellow-300">RAG Technology</span>
+                    </h1>
+                    <p class="text-xl mb-8 text-blue-100 leading-relaxed">
+                        Combine the power of Large Language Models with external knowledge bases for accurate, contextual, and trustworthy AI responses. Get precise answers backed by your data.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="http://54.165.55.207:8501/" target="_blank" rel="noopener noreferrer" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-full font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all transform hover:scale-105 shadow-lg text-center">
+                            🚀 Launch Demo
+                        </a>
+                        <button class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-purple-700 transition-all">
+                            📞 Contact Us
+                        </button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <!-- Animated Chatbot Illustration -->
+                    <div class="animate-float">
+                        <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                            <div class="flex items-center mb-4">
+                                <div class="w-3 h-3 bg-red-400 rounded-full mr-2"></div>
+                                <div class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></div>
+                                <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="bg-gray-100 p-3 rounded-lg text-gray-800">
+                                    "What are the latest AI safety guidelines?"
+                                </div>
+                                <div class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white p-3 rounded-lg">
+                                    Based on recent documents, here are the key AI safety guidelines...
+                                </div>
+                                <div class="flex items-center text-gray-500 text-sm">
+                                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                                    Retrieved from 3 knowledge sources
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold gradient-text mb-4">How RAG Works</h2>
+                <p class="text-xl text-gray-600">Simple 4-step process for intelligent information retrieval</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="text-center card-hover">
+                    <div class="bg-gradient-to-br from-slate-600 to-slate-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">1. Ingest Data</h3>
+                    <p class="text-gray-600">Upload documents, PDFs, and knowledge bases into the system</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="text-center card-hover">
+                    <div class="bg-gradient-to-br from-gray-700 to-gray-900 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">2. Embed & Index</h3>
+                    <p class="text-gray-600">Convert text to vectors and create searchable embeddings</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="text-center card-hover">
+                    <div class="bg-gradient-to-br from-indigo-700 to-indigo-900 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">3. Retrieve</h3>
+                    <p class="text-gray-600">Find most relevant information using hybrid search</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="text-center card-hover">
+                    <div class="bg-gradient-to-br from-violet-700 to-violet-900 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">4. Generate</h3>
+                    <p class="text-gray-600">Create accurate answers using retrieved context</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold gradient-text mb-4">Advanced Features</h2>
+                <p class="text-xl text-gray-600">Cutting-edge technology for superior performance</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="bg-slate-200 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">🔍</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Multi-Query Expansion</h3>
+                    <p class="text-gray-600">Automatically generates multiple search queries to find the most relevant information</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="bg-gray-200 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">⚡</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Hybrid Retrieval</h3>
+                    <p class="text-gray-600">Combines FAISS and Qdrant for lightning-fast, accurate search results</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="bg-indigo-200 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">🎯</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Smart Re-ranking</h3>
+                    <p class="text-gray-600">CrossEncoder technology ensures the most relevant results appear first</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="bg-violet-200 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl">📊</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Admin Dashboard</h3>
+                    <p class="text-gray-600">Complete analytics, feedback logging, and system monitoring</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section id="use-cases" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold gradient-text mb-4">Use Cases</h2>
+                <p class="text-xl text-gray-600">Transforming industries with intelligent AI</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Use Case 1 -->
+                <div class="bg-gradient-to-br from-slate-100 to-gray-200 p-8 rounded-2xl card-hover">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🎧</span>
+                        <h3 class="text-2xl font-semibold">Customer Support</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Provide instant, accurate answers to customer queries using your knowledge base and documentation.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-slate-200 text-slate-800 px-3 py-1 rounded-full text-sm">24/7 Support</span>
+                        <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm">Reduced Tickets</span>
+                    </div>
+                </div>
+
+                <!-- Use Case 2 -->
+                <div class="bg-gradient-to-br from-indigo-100 to-violet-200 p-8 rounded-2xl card-hover">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🏥</span>
+                        <h3 class="text-2xl font-semibold">Healthcare Knowledge</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Access medical literature, guidelines, and research papers for evidence-based decision making.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full text-sm">Evidence-Based</span>
+                        <span class="bg-violet-200 text-violet-800 px-3 py-1 rounded-full text-sm">Secure</span>
+                    </div>
+                </div>
+
+                <!-- Use Case 3 -->
+                <div class="bg-gradient-to-br from-gray-100 to-slate-200 p-8 rounded-2xl card-hover">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🎓</span>
+                        <h3 class="text-2xl font-semibold">Education</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Create intelligent tutoring systems and educational assistants for personalized learning.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm">Personalized</span>
+                        <span class="bg-slate-200 text-slate-800 px-3 py-1 rounded-full text-sm">Interactive</span>
+                    </div>
+                </div>
+
+                <!-- Use Case 4 -->
+                <div class="bg-gradient-to-br from-zinc-100 to-stone-200 p-8 rounded-2xl card-hover">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">📈</span>
+                        <h3 class="text-2xl font-semibold">Business Intelligence</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4">Query business data, reports, and analytics using natural language for faster insights.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-zinc-200 text-zinc-800 px-3 py-1 rounded-full text-sm">Data-Driven</span>
+                        <span class="bg-stone-200 text-stone-800 px-3 py-1 rounded-full text-sm">Real-time</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold gradient-text mb-4">Dashboard & Demo Preview</h2>
+                <p class="text-xl text-gray-600">See RAG System in action</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Chatbot Preview -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-slate-700 to-gray-800 p-4">
+                        <h3 class="text-white font-semibold">AI Assistant Chat</h3>
+                    </div>
+                    <div class="p-6 space-y-4 h-80 overflow-y-auto">
+                        <div class="flex justify-start">
+                            <div class="bg-gray-100 p-3 rounded-lg max-w-xs">
+                                How do I reset my password?
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <div class="bg-gradient-to-r from-slate-700 to-gray-800 text-white p-3 rounded-lg max-w-xs">
+                                To reset your password, go to Settings > Security > Change Password. You'll need to verify your identity first.
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-500 text-center">
+                            ✅ Retrieved from Security Documentation (Confidence: 95%)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Dashboard Preview -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-indigo-700 to-violet-800 p-4">
+                        <h3 class="text-white font-semibold">Admin Dashboard</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-slate-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-slate-700">1,247</div>
+                                <div class="text-sm text-gray-600">Queries Today</div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-gray-700">98.5%</div>
+                                <div class="text-sm text-gray-600">Accuracy Rate</div>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Knowledge Base Coverage</span>
+                                <span class="text-sm font-semibold">92%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-indigo-700 to-violet-800 h-2 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Badges -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center items-center gap-8 opacity-70">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <span class="font-semibold">Enterprise Secure</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                        </svg>
+                    </div>
+                    <span class="font-semibold">Cloud Scalable</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-indigo-700 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <span class="font-semibold">AI-Powered</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-20 bg-gradient-to-br from-slate-100 to-gray-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold gradient-text mb-6">Our Mission</h2>
+            <p class="text-xl text-gray-700 leading-relaxed mb-8">
+                We're dedicated to helping people access accurate, contextual information through AI-powered retrieval. 
+                Our RAG System bridges the gap between vast knowledge repositories and instant, intelligent answers, 
+                making information more accessible and trustworthy for everyone.
+            </p>
+            <div class="bg-white p-8 rounded-2xl shadow-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <div class="text-3xl font-bold gradient-text">99.2%</div>
+                        <div class="text-gray-600">Accuracy Rate</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold gradient-text">50M+</div>
+                        <div class="text-gray-600">Documents Processed</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold gradient-text">500+</div>
+                        <div class="text-gray-600">Enterprise Clients</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-900 text-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold mb-6">Ready to Get Started?</h2>
+            <p class="text-xl text-gray-300 mb-12">
+                Transform your organization with intelligent AI-powered information retrieval
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-full font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all transform hover:scale-105 shadow-lg text-center">
+                    🚀 Launch Demo
+                </a>
+                <button class="bg-gradient-to-r from-slate-600 to-gray-700 text-white px-8 py-4 rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105">
+                    📋 Request Demo
+                </button>
+                <button class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-gray-900 transition-all">
+                    📧 Get in Touch
+                </button>
+                <button class="bg-white text-gray-900 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all">
+                    🔧 Request Deployment
+                </button>
+            </div>
+            
+            <div class="mt-16 pt-8 border-t border-gray-700">
+                <p class="text-gray-400">
+                    © 2024 RAG System. Empowering intelligent information retrieval.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('bg-white/95', 'backdrop-blur-sm');
+            } else {
+                nav.classList.remove('bg-white/95', 'backdrop-blur-sm');
+            }
+        });
+
+        // Button click handlers
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Add click animation
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+                
+                // Show appropriate message based on button text
+                const buttonText = this.textContent.trim();
+                let message = '';
+                
+                if (buttonText.includes('Demo')) {
+                    message = '🚀 Demo request submitted! We\'ll contact you soon to schedule your personalized demonstration.';
+                } else if (buttonText.includes('Contact') || buttonText.includes('Touch')) {
+                    message = '📧 Thank you for your interest! Our team will reach out within 24 hours.';
+                } else if (buttonText.includes('Deployment')) {
+                    message = '🔧 Deployment request received! Our technical team will contact you to discuss your requirements.';
+                }
+                
+                if (message) {
+                    // Create and show notification
+                    const notification = document.createElement('div');
+                    notification.className = 'fixed top-20 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+                    notification.textContent = message;
+                    document.body.appendChild(notification);
+                    
+                    // Animate in
+                    setTimeout(() => {
+                        notification.style.transform = 'translateX(0)';
+                    }, 100);
+                    
+                    // Remove after 5 seconds
+                    setTimeout(() => {
+                        notification.style.transform = 'translateX(full)';
+                        setTimeout(() => {
+                            document.body.removeChild(notification);
+                        }, 300);
+                    }, 5000);
+                }
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98447d0033d29d5d',t:'MTc1ODc0MDA0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
